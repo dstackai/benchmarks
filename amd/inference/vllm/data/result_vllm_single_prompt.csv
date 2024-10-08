@@ -1,0 +1,5 @@
+Successful requests,Benchmark duration (s),Total input tokens,Total generated tokens,Request throughput (req/s),Output token throughput (tok/s),Total Token throughput (tok/s),Mean TTFT (ms),Median TTFT (ms),P99 TTFT (ms),Mean TPOT (ms),Median TPOT (ms),P99 TPOT (ms),Mean ITL (ms),Median ITL (ms),P99 ITL (ms)
+1,748.82,128000,150,0.00,0.20,171.14,734188.96,734188.96,734188.96,98.17,98.17,98.17,98.17,98.11,110.03
+1,221.57,64000,150,0.00,0.68,289.53,209674.58,209674.58,209674.58,79.79,79.79,79.79,79.78,79.46,96.88
+1,73.37,32000,92,0.01,1.25,437.42,66549.57,66549.57,66549.57,74.89,74.89,74.89,74.06,73.80,87.16
+1,33.84,16000,138,0.03,4.08,476.89,23828.07,23828.07,23828.07,73.06,73.06,73.06,72.54,72.19,85.51
