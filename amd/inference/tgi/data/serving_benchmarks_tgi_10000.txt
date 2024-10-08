@@ -21,7 +21,6 @@ Mean ITL (ms):                           46.48
 Median ITL (ms):                         46.05     
 P99 ITL (ms):                            55.15     
 ==================================================
-
 ============ Serving Benchmark Result ============
 Successful requests:                     2         
 Benchmark duration (s):                  13.57     
@@ -43,7 +42,6 @@ Mean ITL (ms):                           68.92
 Median ITL (ms):                         52.19     
 P99 ITL (ms):                            60.91     
 ==================================================
-
 ============ Serving Benchmark Result ============
 Successful requests:                     4         
 Benchmark duration (s):                  22.18     
@@ -65,7 +63,6 @@ Mean ITL (ms):                           82.80
 Median ITL (ms):                         61.18     
 P99 ITL (ms):                            66.23     
 ==================================================
-
 ============ Serving Benchmark Result ============
 Successful requests:                     8         
 Benchmark duration (s):                  36.63     
@@ -87,8 +84,6 @@ Mean ITL (ms):                           93.34
 Median ITL (ms):                         68.09     
 P99 ITL (ms):                            72.46     
 ==================================================
-
-
 ============ Serving Benchmark Result ============
 Successful requests:                     16        
 Benchmark duration (s):                  66.76     
@@ -110,8 +105,6 @@ Mean ITL (ms):                           181.51
 Median ITL (ms):                         88.03     
 P99 ITL (ms):                            97.12     
 ==================================================
-
-
 ============ Serving Benchmark Result ============
 Successful requests:                     32        
 Benchmark duration (s):                  128.36    
@@ -133,7 +126,6 @@ Mean ITL (ms):                           440.78
 Median ITL (ms):                         128.65    
 P99 ITL (ms):                            16034.43  
 ==================================================
-
 ============ Serving Benchmark Result ============
 Successful requests:                     64        
 Benchmark duration (s):                  244.17    
