@@ -114,7 +114,7 @@ Note, To create larger prompt sequence lengths, the text in `sonnet.txt` is repe
 
 ### TGI
 ### Steps
-1. Run dstack [task](https://dstack.ai/docs/tasks/) to start vLLM server.
+1. Run dstack [task](https://dstack.ai/docs/tasks/) to start TGI server.
 ```shell
 dstack apply -f tgi/benchmark-task.dstack.yml
 ```
