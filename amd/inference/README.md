@@ -12,12 +12,11 @@ Clone the repo, and run `dstack init`.
     $ dstack init
 ```
 
-To validate the tests, you can conduct the tests using [benchmark_serving](https://github.com/vllm-project/vllm/blob/main/benchmarks/benchmark_serving.py) provided by
-`vLLM`. The script provides instructions on both `TGI` and `vLLM`.
+To run the tests we have modified [benchmark_serving](https://github.com/vllm-project/vllm/blob/main/benchmarks/benchmark_serving.py) script provided by `vLLM`. The script provides instructions on both `TGI` and `vLLM`. The updated code provides open-ai compatible endpoint for TGI.
 
 ### vLLM
 <details>
-  <summary>Click check out test environment with vLLM</summary>
+  <summary>Click check our test environment with vLLM</summary>
     
     PyTorch version: 2.4.1+rocm6.1
     Is debug build: False
@@ -172,5 +171,9 @@ Below is the `rocm-smi` outputs of TGI & vLLM after they load weights. Notice VR
 consumes `95%`. This might be the reason in significant performance difference.
 * VRAM consumption
 ![Chart6](gpu_vram_tgi_vllm.png)
+
+## What's next?
+Check our complete benchmarking post: [Benchmarking Llama 3.1 405B on 8x AMD MI300X GPUs](https://dstack.ai/blog/amd-mi300x-inference-benchmark/). 
+
 
 
