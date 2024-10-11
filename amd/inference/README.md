@@ -4,78 +4,152 @@
 In this benchmarking analysis, we compare the performance of two popular inference backends, `TGI` and `vLLM`, using the `LLaMA 3.1 405B` model on the `8 X AMD MI300x`. 
 
 ## Benchmark Setup
+### Install dstack
+Clone the repo, and run `dstack init`.
+```shell
+    $ git clone https://github.com/dstackai/dstack
+    $ cd dstack
+    $ dstack init
+```
+
 To validate the tests, you can conduct the tests using [benchmark_serving](https://github.com/vllm-project/vllm/blob/main/benchmarks/benchmark_serving.py) provided by
 `vLLM`. The script provides instructions on both `TGI` and `vLLM`.
 
 ### vLLM
+<details>
+  <summary>Click check out test environment with vLLM</summary>
+    
+    PyTorch version: 2.4.1+rocm6.1
+    Is debug build: False
+    CUDA used to build PyTorch: N/A
+    ROCM used to build PyTorch: 6.1.40091-a8dbc0c19
+
+    OS: Ubuntu 22.04.4 LTS (x86_64)
+    GCC version: (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+    Clang version: 17.0.0 (https://github.com/RadeonOpenCompute/llvm-project roc-6.1.0 24103 7db7f5e49612030319346f900c08f474b1f9023a)
+    CMake version: version 3.26.4
+    Libc version: glibc-2.35
+    
+    Python version: 3.10.14 (main, Mar 21 2024, 16:24:04) [GCC 11.2.0] (64-bit runtime)
+    Python platform: Linux-6.8.0-45-generic-x86_64-with-glibc2.35
+    Is CUDA available: True
+    CUDA runtime version: Could not collect
+    CUDA_MODULE_LOADING set to: LAZY
+    GPU models and configuration: AMD Instinct MI300X (gfx942:sramecc+:xnack-)
+    Nvidia driver version: Could not collect
+    cuDNN version: Could not collect
+    HIP runtime version: 6.1.40093
+    MIOpen runtime version: 3.1.0
+    Is XNNPACK available: True
+    
+    Versions of relevant libraries:
+    [pip3] mypy==1.4.1
+    [pip3] mypy-extensions==1.0.0
+    [pip3] numpy==1.26.4
+    [pip3] pytorch-triton-rocm==3.0.0
+    [pip3] pyzmq==24.0.1
+    [pip3] torch==2.4.1+rocm6.1
+    [pip3] torchaudio==2.4.1+rocm6.1
+    [pip3] torchvision==0.16.1+fdea156
+    [pip3] transformers==4.45.1
+    [pip3] triton==3.0.0
+    [conda] No relevant packages
+    ROCM Version: 6.1.40091-a8dbc0c19
+    Neuron SDK Version: N/A
+    vLLM Version: 0.6.3.dev116+g151ef4ef
+    vLLM Build Flags:
+    CUDA Archs: Not Set; ROCm: Disabled; Neuron: Disabled
+</details>
+
+### Steps
+1. Run dstack [task](https://dstack.ai/docs/tasks/). 
+```shell
+dstack apply -f vllm/benchmark-task.dstack.yml
 ```
-PyTorch version: 2.4.1+rocm6.1
-Is debug build: False
-CUDA used to build PyTorch: N/A
-ROCM used to build PyTorch: 6.1.40091-a8dbc0c19
+Below is the configuration file that runs vLLM
+```yaml
+type: task
+# This task runs meta-llama/Llama-3.1-405B-Instruct with vLLM
 
-OS: Ubuntu 22.04.4 LTS (x86_64)
-GCC version: (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
-Clang version: 17.0.0 (https://github.com/RadeonOpenCompute/llvm-project roc-6.1.0 24103 7db7f5e49612030319346f900c08f474b1f9023a)
-CMake version: version 3.26.4
-Libc version: glibc-2.35
+image: ghcr.io/huggingface/text-generation-inference:latest
 
-Python version: 3.10.14 (main, Mar 21 2024, 16:24:04) [GCC 11.2.0] (64-bit runtime)
-Python platform: Linux-6.8.0-45-generic-x86_64-with-glibc2.35
-Is CUDA available: True
-CUDA runtime version: Could not collect
-CUDA_MODULE_LOADING set to: LAZY
-GPU models and configuration: AMD Instinct MI300X (gfx942:sramecc+:xnack-)
-Nvidia driver version: Could not collect
-cuDNN version: Could not collect
-HIP runtime version: 6.1.40093
-MIOpen runtime version: 3.1.0
-Is XNNPACK available: True
+env:
+  - HUGGING_FACE_HUB_TOKEN
+  - MODEL_ID=meta-llama/Llama-3.1-405B-Instruct
 
-Versions of relevant libraries:
-[pip3] mypy==1.4.1
-[pip3] mypy-extensions==1.0.0
-[pip3] numpy==1.26.4
-[pip3] pytorch-triton-rocm==3.0.0
-[pip3] pyzmq==24.0.1
-[pip3] torch==2.4.1+rocm6.1
-[pip3] torchaudio==2.4.1+rocm6.1
-[pip3] torchvision==0.16.1+fdea156
-[pip3] transformers==4.45.1
-[pip3] triton==3.0.0
-[conda] No relevant packages
-ROCM Version: 6.1.40091-a8dbc0c19
-Neuron SDK Version: N/A
-vLLM Version: 0.6.3.dev116+g151ef4ef
-vLLM Build Flags:
-CUDA Archs: Not Set; ROCm: Disabled; Neuron: Disabled
+commands:
+  - export PATH=/opt/conda/envs/py_3.10/bin:$PATH
+  - wget https://github.com/ROCm/hipBLAS/archive/refs/tags/rocm-6.1.0.zip
+  - unzip rocm-6.1.0.zip
+  - cd hipBLAS-rocm-6.1.0
+  - python rmake.py
+  - cd ..
+  - git clone https://github.com/vllm-project/vllm.git
+  - cd vllm
+  - pip install triton
+  - pip uninstall torch -y
+  - pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
+  - pip install /opt/rocm/share/amd_smi
+  - pip install --upgrade numba scipy huggingface-hub[cli]
+  - pip install "numpy<2"
+  - pip install -r requirements-rocm.txt
+  - wget -N https://github.com/ROCm/vllm/raw/fa78403/rocm_patch/libamdhip64.so.6 -P /opt/rocm/lib
+  - rm -f "$(python3 -c 'import torch; print(torch.__path__[0])')"/lib/libamdhip64.so*
+  - export PYTORCH_ROCM_ARCH="gfx90a;gfx942"
+  - pip install setuptools_scm
+  - python setup.py develop
+  - ROCR_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 vllm serve $MODEL_ID --tensor-parallel-size=8 --disable-log-requests --disable-frontend-multiprocessing
+
+ports:
+  - 8000
 ```
 
+2. Run test:
+```shell 
+$ python scripts/benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-Instruct 
+  --dataset-name sonnet  --num-prompt=<Batch Size> --dataset-path="sonnet.txt" --sonnet-input-len <sequence length>
+  # to set different request per second add --request-rate <RPS> in the above command.
+```
 
-
-#### Steps
-1. Run vLLM server: 
-   `ROCR_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 vllm serve meta-llama/Llama-3.1-405B-Instruct 
-                                                             --tensor-parallel-size=8 --disable-log-requests 
-                                                             --disable-frontend-multiprocessing`
-
-2. To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
-
-3. Run test:
-    `python benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-Instruct 
-                                 --dataset-name sonnet  --num-prompt=<Batch Size> --dataset-path="sonnet.txt" --sonnet-input-len <sequence length>`
-
+Note, To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
 
 ### TGI
-TGI Docker Image:`ghcr.io/huggingface/text-generation-inference:sha-11d7af7-rocm`
+### Steps
+1. Run dstack [task](https://dstack.ai/docs/tasks/) to start vLLM server.
+```shell
+dstack apply -f tgi/benchmark-task.dstack.yml
+```
+Below is the configuration file that runs TGI
+```yaml
+type: task
+# This task runs meta-llama/Llama-3.1-405B-Instruct with TGI
 
-#### Steps
-1. Run TGI server:
-   `text-generation-launcher --port 8000 --num-shard 8 --sharded true --max-concurrent-requests 8192 --max-total-tokens 130000 --max-input-tokens 125000`
-2. To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
-3. Run test:
-   `python benchmark_serving.py --backend tgi --model meta-llama/Llama-3.1-405B-Instruct --dataset-name sonnet  
-                                --sonnet-input-len <sequence lenght>   --endpoint /generate_stream --dataset-path="sonnet.txt" --num-prompt=<Batch Size>`
+image: ghcr.io/huggingface/text-generation-inference:sha-11d7af7-rocm
+
+env:
+  - HUGGING_FACE_HUB_TOKEN
+  - ROCM_USE_FLASH_ATTN_V2_TRITON=true
+  - MODEL_ID=meta-llama/Llama-3.1-405B-Instruct
+  - TRUST_REMOTE_CODE=true
+  - MAX_CONCURRENT_REQUESTS=8192
+  - MAX_TOTAL_TOKEN=130000
+  - MAX-INPUT-TOKEN
+
+commands:
+  - pip install aiohttp
+  - pip install datasets
+  - text-generation-launcher --port 8000 --num-shard 8 --sharded true --max-concurrent-requests $MAX_CONCURRENT_REQUESTS --max-total-tokens $MAX_TOTAL_TOKEN --max-input-tokens $MAX-INPUT-TOKEN
+
+ports:
+  - 8000
+```
+2. Run test:
+```shell 
+$ python scripts/benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-Instruct 
+  --dataset-name sonnet  --num-prompt=<Batch Size> --dataset-path="sonnet.txt" --sonnet-input-len <sequence length>
+  # to set different request per second add --request-rate <RPS> in the above command.
+```
+Note, To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
 
 
 ## Results
@@ -96,49 +170,7 @@ This too yielded results in favor of TGI.
 * Another noticeable metric is VRAM consumption with `TGI` and `vLLM`
 Below is the `rocm-smi` outputs of TGI & vLLM after they load weights. Notice VRAM consumed is `68%` with TGI while vLLM
 consumes `95%`. This might be the reason in significant performance difference.
-
-### TGI (rocm-smi)
-```============================================ ROCm System Management Interface ============================================
-====================================================== Concise Info ======================================================
-Device  Node  IDs              Temp        Power     Partitions          SCLK    MCLK    Fan  Perf  PwrCap  VRAM%  GPU%  
-              (DID,     GUID)  (Junction)  (Socket)  (Mem, Compute, ID)                                                  
-==========================================================================================================================
-0       2     0x74a1,   55354  47.0°C      139.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-1       3     0x74a1,   41632  40.0°C      135.0W    NPS1, SPX, 0        131Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-2       4     0x74a1,   47045  44.0°C      136.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-3       5     0x74a1,   60169  48.0°C      143.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-4       6     0x74a1,   56024  46.0°C      139.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-5       7     0x74a1,   705    42.0°C      136.0W    NPS1, SPX, 0        131Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-6       8     0x74a1,   59108  51.0°C      144.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-7       9     0x74a1,   10985  44.0°C      138.0W    NPS1, SPX, 0        132Mhz  900Mhz  0%   auto  750.0W  68%    0%    
-==========================================================================================================================
-================================================== End of ROCm SMI Log ===================================================
-```
-### vLLM (rocm-smi)
-
-```========================================= ROCm System Management Interface =========================================
-=================================================== Concise Info ===================================================
-Device  [Model : Revision]    Temp        Power     Partitions      SCLK    MCLK    Fan  Perf  PwrCap  VRAM%  GPU%  
-        Name (20 chars)       (Junction)  (Socket)  (Mem, Compute)                                                  
-====================================================================================================================
-0       [0x74a1 : 0x00]       47.0°C      139.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   97%   0%    
-        AMD Instinct MI300X                                                                                         
-1       [0x74a1 : 0x00]       39.0°C      135.0W    NPS1, SPX       131Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-2       [0x74a1 : 0x00]       44.0°C      136.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-3       [0x74a1 : 0x00]       48.0°C      143.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-4       [0x74a1 : 0x00]       46.0°C      138.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-5       [0x74a1 : 0x00]       41.0°C      137.0W    NPS1, SPX       131Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-6       [0x74a1 : 0x00]       51.0°C      143.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-7       [0x74a1 : 0x00]       43.0°C      137.0W    NPS1, SPX       132Mhz  900Mhz  0%   auto  750.0W   95%   0%    
-        AMD Instinct MI300X                                                                                         
-====================================================================================================================
-=============================================== End of ROCm SMI Log ================================================
-```
+* VRAM consumption
+![Chart6](gpu_vram_tgi_vllm.png)
 
 

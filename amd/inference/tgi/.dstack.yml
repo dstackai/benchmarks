@@ -1,0 +1,17 @@
+type: dev-environment
+name: dev-tgi-amd
+
+image: ghcr.io/huggingface/text-generation-inference:sha-11d7af7-rocm
+env:
+  - HUGGING_FACE_HUB_TOKEN
+  - ROCM_USE_FLASH_ATTN_V2_TRITON=true
+  - MODEL_ID=meta-llama/Llama-3.1-405B-Instruct
+  - TRUST_REMOTE_CODE=true
+ide: vscode
+
+#init:
+#  - pip install aiohttp
+#  - pip install datasets
+#  - cd scripts
+#  - text-generation-launcher --port 8000 --num-shard 8 --sharded true --max-concurrent-requests 8192 --max-total-tokens 130000 --max-input-tokens 125000
+#  - python benchmark_serving.py --backend tgi --model meta-llama/Llama-3.1-405B-Instruct --dataset-name sonnet  --sonnet-input-len 1000  --dataset-path="sonnet.txt" --num-prompt=1

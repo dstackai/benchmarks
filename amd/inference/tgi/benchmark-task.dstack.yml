@@ -1,0 +1,21 @@
+type: task
+# This task runs meta-llama/Llama-3.1-405B-Instruct with TGI
+
+image: ghcr.io/huggingface/text-generation-inference:latest
+
+env:
+  - HUGGING_FACE_HUB_TOKEN
+  - ROCM_USE_FLASH_ATTN_V2_TRITON=true
+  - MODEL_ID=meta-llama/Llama-3.1-405B-Instruct
+  - TRUST_REMOTE_CODE=true
+  - MAX_CONCURRENT_REQUESTS=8192
+  - MAX_TOTAL_TOKEN=130000
+  - MAX-INPUT-TOKEN
+
+commands:
+  - pip install aiohttp
+  - pip install datasets
+  - text-generation-launcher --port 8000 --num-shard 8 --sharded true --max-concurrent-requests $MAX_CONCURRENT_REQUESTS --max-total-tokens $MAX_TOTAL_TOKEN --max-input-tokens $MAX-INPUT-TOKEN
+
+ports:
+  - 8000
