@@ -16,7 +16,7 @@ To run the tests we have modified [benchmark_serving](https://github.com/vllm-pr
 
 ### vLLM
 <details>
-  <summary>Click check our test environment with vLLM</summary>
+  <summary>Click to check our test environment with vLLM</summary>
     
     PyTorch version: 2.4.1+rocm6.1
     Is debug build: False
