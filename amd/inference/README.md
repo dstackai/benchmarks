@@ -110,7 +110,9 @@ $ python scripts/benchmark_serving.py --backend vllm --model meta-llama/Llama-3.
   # to set different request per second add --request-rate <RPS> in the above command.
 ```
 
-Note, To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
+Note: 
+* To test with larger prompt sequence lengths, the text in `sonnet.txt` should be repeated in the file.
+* To test with smaller prompt sequence lengths (eg 80) set `--sonnet-prefix-len` to 50.
 
 ### TGI
 ### Steps
@@ -148,8 +150,9 @@ $ python scripts/benchmark_serving.py --backend vllm --model meta-llama/Llama-3.
   --dataset-name sonnet  --num-prompt=<Batch Size> --dataset-path="sonnet.txt" --sonnet-input-len <sequence length>
   # to set different request per second add --request-rate <RPS> in the above command.
 ```
-Note, To create larger prompt sequence lengths, the text in `sonnet.txt` is repeated in the file. Also, default `--sonnet-prefix-len` is set to 50
-
+Note: 
+* To test with larger prompt sequence lengths, the text in `sonnet.txt` should be repeated in the file.
+* To test with smaller prompt sequence lengths (eg 80) set `--sonnet-prefix-len` to 50.
 
 ## Results
 * TGI outperforms vLLM across all batch sizes in terms of token throughput. The performance gap increases
