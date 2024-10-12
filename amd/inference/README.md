@@ -113,6 +113,7 @@ $ python scripts/benchmark_serving.py --backend vllm --model meta-llama/Llama-3.
 Note: 
 * To test with larger prompt sequence lengths, the text in `sonnet.txt` should be repeated in the file.
 * To test with smaller prompt sequence lengths (eg 80) set `--sonnet-prefix-len` to 50.
+* vllm server is started with `--disable-frontend-multiprocessing` option to make it handle large no of requests. We have also commented on this [issue](https://github.com/vllm-project/vllm/issues/7653#issuecomment-2401648419)
 
 ### TGI
 ### Steps
