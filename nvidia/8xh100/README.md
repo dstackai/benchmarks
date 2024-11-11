@@ -1,4 +1,4 @@
-# 8xH100 Benchmark Results
+# 8xH100 Benchmark with Llama3.1-405B-Fp8 Results
 
 ## Introduction
 In this benchmark, we test the performance of Nvidia 8xH100 SXM5 with Llama3.1-405B-Fp8 using vLLM.
