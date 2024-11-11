@@ -48,7 +48,7 @@ if df[enable_chunked_prefill_col].dtype == object:
 
 # Define the filtering criteria
 desired_qps = [16, 32, 1000]
-desired_scheduler_steps = [0, 5, 10, 15]
+desired_scheduler_steps = [1, 5, 10, 15]
 
 # Filter the data based on the specified criteria
 filtered_df = df[

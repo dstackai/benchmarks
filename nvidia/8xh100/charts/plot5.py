@@ -24,7 +24,7 @@ if missing_columns:
 
 # Filter data
 filtered_df = df[
-    (df[input_len_col] == 2048) &
+    (df[input_len_col] == 32784) &
     (df[out_len_col] == 2048)
 ]
 
@@ -50,7 +50,7 @@ bar_plot = sns.barplot(
 )
 
 # Set title and labels
-plt.title('Tokens Per Second vs Batch Size (Input_len=2048, Out_len=2048)', fontsize=18)
+plt.title('Tokens Per Second vs Batch Size (Input_len=32784, Output_len=2048)', fontsize=18)
 plt.xlabel('Batch Size', fontsize=14)
 plt.ylabel('Tokens Per Second', fontsize=14)
 
@@ -71,7 +71,7 @@ plt.ylim(0, filtered_df[tokens_per_second_col].max() * 1.15)
 plt.tight_layout()
 
 # Save the plot
-plt.savefig('tokens_per_second_vs_batch_size_2048_2048.png', dpi=300, bbox_inches='tight')
+plt.savefig('tokens_per_second_vs_batch_size.png', dpi=300, bbox_inches='tight')
 
 # Display the plot
 plt.show()
