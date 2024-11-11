@@ -231,6 +231,11 @@ Beyond this threshold, achieving higher throughput values requires a trade-off w
 indicating a saturation point in processing capacity for larger input sizes.
 4. In our benchmarking environment, `vLLM`' serving achieves optimal performance when the `num-scheduler-step` is set to `1` and `chunked prefill` is `enabled`.
 
+### CSV Data
+1. [QPS](https://github.com/dstackai/benchmarks/blob/add_8xH100_benchmarks/nvidia/8xh100/charts/qps_output.csv)
+2. [Throughput](https://github.com/dstackai/benchmarks/blob/add_8xH100_benchmarks/nvidia/8xh100/charts/throughput_output.csv)
+3. [Latency](https://github.com/dstackai/benchmarks/blob/add_8xH100_benchmarks/nvidia/8xh100/charts/latency_output.csv)
+
 ### Issues
 1. [vllm blog](https://blog.vllm.ai/2024/09/05/perf-update.html) suggests turning on multistep scheduling via setting `--num-scheduler-steps` at 10 should improve the performance, however
 in our setup `--num-scheduler-steps` at 1 achieved better performance. Does multistep scheduling settings be dependent on multi-threading capabilities of the CPU?
