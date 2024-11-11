@@ -5,7 +5,7 @@ In this benchmark, we test the performance of Nvidia 8xH100 SXM5 with Llama3.1-4
 
 ## Environment
 <details>
-    <summary>Click to check out test environment with vLLM</summary>
+    <summary>Click to check our test environment with vLLM</summary>
     
     PyTorch version: 2.5.1+cu124
     Is debug build: False
