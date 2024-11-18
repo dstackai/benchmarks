@@ -351,8 +351,8 @@ Below is the command to run the script in both hardware.
 python3 benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-FP8 --dataset-name sharegpt --dataset-path="ShareGPT_V3_unfiltered_cleaned_split.json" --request-rate=QPS
 ```
 ### Key Findings ([Check Raw Data](raw_data/))
-Nvidia `8xH100 SXM5` beats `8xMi300x` in `throughput(request/s)`, `mean_ttft_ms`, `total_token_throughput` and `mean_tpot_ms` across QPS levels 16, 32 and 1000. At QPS=1000, 8xMi300x drops most of the requests
-completing only 17 out of 1000 requests. vLLM encountered with an error. (See [logs](issues/serving-benchmark-error-qps1000.txt))
+Nvidia `8xH100 SXM5` beats `8xMi300x` in `throughput(request/s)`, `mean_ttft_ms`, `total_token_throughput` and `mean_tpot_ms` across QPS levels 16, 32 and 1000. At QPS=1000, vLLM threw [error](issues/serving-benchmark-error-qps1000.txt) and 8xMi300x dropped most of the requests.
+It completed only 17 out of 1000 requests.
 ![request_throughput_vs_qps_comparison_gpus.png](images/request_throughput_vs_qps_comparison_gpus.png)
 ![mean_ttft_vs_qps_comparison_gpus.png](images/mean_ttft_vs_qps_comparison_gpus.png)
 ![total_token_throughput_vs_qps_comparison_gpus.png](images/total_token_throughput_vs_qps_comparison_gpus.png)
@@ -403,3 +403,9 @@ python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B
 1. When `input-len=2048` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` across batch sizes 4 to 64. At batch size
 128 and 256, `8xMI300x` beats `8xH100 SXM5`
 ![tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png)
+
+2. #todo: other input-len, output-len combinations
+3. #todo: latency benchmark comparison
+
+### TODOs
+1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.
