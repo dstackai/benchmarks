@@ -65,7 +65,7 @@ for p in bar_plot.patches:
 plt.tight_layout()
 
 # Save the plot
-plt.savefig('charts/total_token_throughput_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
+plt.savefig('images/total_token_throughput_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
 
 # Display the plot
 plt.show()

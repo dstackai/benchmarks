@@ -72,7 +72,7 @@ for p in bar_plot.patches:
 plt.tight_layout()
 
 # Save the plot
-plt.savefig('charts/tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png', dpi=300, bbox_inches='tight')
+plt.savefig('images/tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png', dpi=300, bbox_inches='tight')
 
 # Display the plot
 plt.show()

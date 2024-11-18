@@ -65,7 +65,7 @@ for p in bar_plot.patches:
 plt.tight_layout()
 
 # Save the plot
-plt.savefig('charts/completed_requests_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
+plt.savefig('images/completed_requests_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
 
 # Display the plot
 plt.show()
