@@ -4,7 +4,7 @@ import seaborn as sns
 import sys
 
 # Read the CSV file
-df = pd.read_csv('qps_comparision.csv')
+df = pd.read_csv('qps_comparison.csv')
 
 # Normalize column names
 df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')

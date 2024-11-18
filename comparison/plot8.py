@@ -4,7 +4,7 @@ import seaborn as sns
 import sys
 
 # Read the CSV file
-df = pd.read_csv('qps_comparision.csv')
+df = pd.read_csv('qps_comparison.csv')
 
 # Normalize column names
 df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
@@ -12,10 +12,10 @@ df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
 # Define column names
 gpu_col = 'gpu'
 qps_col = 'qps'
-total_token_throughput_col = 'total_token_throughput'
+mean_tpot_ms_col = 'mean_tpot_ms'
 
 # Verify required columns
-required_columns = [gpu_col, qps_col, total_token_throughput_col]
+required_columns = [gpu_col, qps_col, mean_tpot_ms_col]
 missing_columns = [col for col in required_columns if col not in df.columns]
 if missing_columns:
     print(f"Error: Missing columns {missing_columns}")
@@ -25,7 +25,7 @@ if missing_columns:
 df[qps_col] = df[qps_col].astype(str)
 
 # Filter out QPS values where not all GPUs have data
-valid_qps = df.groupby(qps_col)[total_token_throughput_col].count()
+valid_qps = df.groupby(qps_col)[mean_tpot_ms_col].count()
 valid_qps = valid_qps[valid_qps == df[gpu_col].nunique()].index
 filtered_df = df[df[qps_col].isin(valid_qps)]
 
@@ -38,7 +38,7 @@ plt.figure(figsize=(12, 8))
 # Create bar plot
 bar_plot = sns.barplot(
     x=qps_col,
-    y=total_token_throughput_col,
+    y=mean_tpot_ms_col,
     hue=gpu_col,
     data=filtered_df,
     dodge=True,
@@ -46,9 +46,9 @@ bar_plot = sns.barplot(
 )
 
 # Set title and labels
-plt.title('Total Token Throughput vs QPS for Different GPUs', fontsize=18)
+plt.title('Mean TPOT (ms) vs QPS for Different GPUs', fontsize=18)
 plt.xlabel('QPS', fontsize=14)
-plt.ylabel('Total Token Throughput', fontsize=14)
+plt.ylabel('Mean TPOT (ms)', fontsize=14)
 plt.legend(title='GPU')
 
 # Add labels on top of bars
@@ -65,7 +65,7 @@ for p in bar_plot.patches:
 plt.tight_layout()
 
 # Save the plot
-plt.savefig('images/total_token_throughput_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
+plt.savefig('images/mean_tpot_ms_vs_qps_comparison_gpus.png', dpi=300, bbox_inches='tight')
 
 # Display the plot
 plt.show()
