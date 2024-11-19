@@ -403,9 +403,15 @@ python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B
 1. When `input-len=2048` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` across batch sizes 4 to 64. At batch size
 128 and 256, `8xMI300x` beats `8xH100 SXM5`
 ![tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png)
-
-2. #todo: other input-len, output-len combinations
-3. #todo: latency benchmark comparison
+2. When `input-len=128` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` significantly across batch sizes 4 to 128.
+![tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png)
+3. When `input-len=32784` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` significantly at batch size 4. `8xH100 SXM5` shows minimal
+improvement in throughput as batch size increases. Upto batch size 32, `8xMI300x` shows improvement in throughput as batch size increases. 
+![tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png)
+4.To plot throughput-latency curve, we combined the Throughput(tokens/s) results from `benchmark_throughput.py` with `End-to-End latency(s)` results from `benchmark_latency.py` 
+at `input_len=2048` and `output_len=2048`. Upto ~1000 tokens/s throughput `8xH100 SXM5` provides better end to end latency for same
+throughput values. After ~1000 tokens/s throughput `8xMi300x` provides better end to end latency.
+![tokens_per_second_vs_end_to_end_latency_comparison_gpus.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus.png)
 
 ### TODOs
 1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.
