@@ -174,9 +174,9 @@ In this comparison, we test the performance of Nvidia 8xH100 SXM5 and AMD 8xMi30
     TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1
 </details>
 
-### AMD 8xMi300x
+### AMD 8xMi300x for meta-llama/Llama-3.1-405B-FP8
 <details>
-<summary>Click to see 8xMi300x SXM5 detail</summary>
+<summary>Click to see 8xMi300x detail</summary>
        
        Collecting environment information...
        WARNING 11-18 11:00:24 rocm.py:13] `fork` method is not supported by ROCm. VLLM_WORKER_MULTIPROC_METHOD is overridden to `spawn` instead.
@@ -318,6 +318,160 @@ In this comparison, we test the performance of Nvidia 8xH100 SXM5 and AMD 8xMi30
        ================================== End of ROCm SMI Log ===================================
 </details>
 
+### AMD 8xMi300x for amd/Llama-3.1-405B-Instruct-FP8-KV
+<details>
+<summary>Click to see 8xMi300x detail</summary>
+    
+    Collecting environment information...
+    PyTorch version: 2.5.0a0+gitcedc116
+    Is debug build: False
+    CUDA used to build PyTorch: N/A
+    ROCM used to build PyTorch: 6.2.41133-dd7f95766
+    
+    OS: Ubuntu 20.04.6 LTS (x86_64)
+    GCC version: (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+    Clang version: 18.0.0git (https://github.com/RadeonOpenCompute/llvm-project roc-6.2.0 24292 26466ce804ac523b398608f17388eb6d605a3f09)
+    CMake version: version 3.26.4
+    Libc version: glibc-2.31
+    
+    Python version: 3.9.19 (main, May  6 2024, 19:43:03)  [GCC 11.2.0] (64-bit runtime)
+    Python platform: Linux-6.8.0-48-generic-x86_64-with-glibc2.31
+    Is CUDA available: True
+    CUDA runtime version: Could not collect
+    CUDA_MODULE_LOADING set to: LAZY
+    GPU models and configuration: AMD Instinct MI300X (gfx942:sramecc+:xnack-)
+    Nvidia driver version: Could not collect
+    cuDNN version: Could not collect
+    HIP runtime version: 6.2.41133
+    MIOpen runtime version: 3.2.0
+    Is XNNPACK available: True
+    
+    CPU:
+    Architecture:                         x86_64
+    CPU op-mode(s):                       32-bit, 64-bit
+    Byte Order:                           Little Endian
+    Address sizes:                        46 bits physical, 57 bits virtual
+    CPU(s):                               128
+    On-line CPU(s) list:                  0-127
+    Thread(s) per core:                   2
+    Core(s) per socket:                   32
+    Socket(s):                            2
+    NUMA node(s):                         2
+    Vendor ID:                            GenuineIntel
+    CPU family:                           6
+    Model:                                143
+    Model name:                           Intel(R) Xeon(R) Platinum 8462Y+
+    Stepping:                             8
+    CPU MHz:                              2545.726
+    CPU max MHz:                          4100.0000
+    CPU min MHz:                          800.0000
+    BogoMIPS:                             5600.00
+    Virtualization:                       VT-x
+    L1d cache:                            3 MiB
+    L1i cache:                            2 MiB
+    L2 cache:                             128 MiB
+    L3 cache:                             120 MiB
+    NUMA node0 CPU(s):                    0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126
+    NUMA node1 CPU(s):                    1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95,97,99,101,103,105,107,109,111,113,115,117,119,121,123,125,127
+    Vulnerability Gather data sampling:   Not affected
+    Vulnerability Itlb multihit:          Not affected
+    Vulnerability L1tf:                   Not affected
+    Vulnerability Mds:                    Not affected
+    Vulnerability Meltdown:               Not affected
+    Vulnerability Mmio stale data:        Not affected
+    Vulnerability Reg file data sampling: Not affected
+    Vulnerability Retbleed:               Not affected
+    Vulnerability Spec rstack overflow:   Not affected
+    Vulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl
+    Vulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+    Vulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S
+    Vulnerability Srbds:                  Not affected
+    Vulnerability Tsx async abort:        Not affected
+    Flags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cat_l2 cdp_l3 cdp_l2 ssbd mba ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb intel_pt avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local split_lock_detect user_shstk avx_vnni avx512_bf16 wbnoinvd dtherm ida arat pln pts hfi vnmi avx512vbmi umip pku ospke waitpkg avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg tme avx512_vpopcntdq la57 rdpid bus_lock_detect cldemote movdiri movdir64b enqcmd fsrm md_clear serialize tsxldtrk pconfig arch_lbr ibt amx_bf16 avx512_fp16 amx_tile amx_int8 flush_l1d arch_capabilities
+    
+    Versions of relevant libraries:
+    [pip3] mypy==1.8.0
+    [pip3] mypy-extensions==1.0.0
+    [pip3] numpy==1.26.4
+    [pip3] optree==0.9.1
+    [pip3] pyzmq==26.2.0
+    [pip3] torch==2.5.0a0+gitcedc116
+    [pip3] torchvision==0.19.1a0+6194369
+    [pip3] transformers==4.46.0
+    [pip3] triton==3.0.0
+    [conda] No relevant packages
+    ROCM Version: 6.2.41133-dd7f95766
+    Neuron SDK Version: N/A
+    vLLM Version: 0.6.4.dev4+gc9fc1608
+    vLLM Build Flags:
+    CUDA Archs: Not Set; ROCm: Disabled; Neuron: Disabled
+    GPU Topology:
+    ============================ ROCm System Management Interface ============================
+    ================================ Weight between two GPUs =================================
+           GPU0         GPU1         GPU2         GPU3         GPU4         GPU5         GPU6         GPU7         
+    GPU0   0            15           15           15           15           15           15           15           
+    GPU1   15           0            15           15           15           15           15           15           
+    GPU2   15           15           0            15           15           15           15           15           
+    GPU3   15           15           15           0            15           15           15           15           
+    GPU4   15           15           15           15           0            15           15           15           
+    GPU5   15           15           15           15           15           0            15           15           
+    GPU6   15           15           15           15           15           15           0            15           
+    GPU7   15           15           15           15           15           15           15           0            
+    
+    ================================= Hops between two GPUs ==================================
+           GPU0         GPU1         GPU2         GPU3         GPU4         GPU5         GPU6         GPU7         
+    GPU0   0            1            1            1            1            1            1            1            
+    GPU1   1            0            1            1            1            1            1            1            
+    GPU2   1            1            0            1            1            1            1            1            
+    GPU3   1            1            1            0            1            1            1            1            
+    GPU4   1            1            1            1            0            1            1            1            
+    GPU5   1            1            1            1            1            0            1            1            
+    GPU6   1            1            1            1            1            1            0            1            
+    GPU7   1            1            1            1            1            1            1            0            
+    
+    =============================== Link Type between two GPUs ===============================
+           GPU0         GPU1         GPU2         GPU3         GPU4         GPU5         GPU6         GPU7         
+    GPU0   0            XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         
+    GPU1   XGMI         0            XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         
+    GPU2   XGMI         XGMI         0            XGMI         XGMI         XGMI         XGMI         XGMI         
+    GPU3   XGMI         XGMI         XGMI         0            XGMI         XGMI         XGMI         XGMI         
+    GPU4   XGMI         XGMI         XGMI         XGMI         0            XGMI         XGMI         XGMI         
+    GPU5   XGMI         XGMI         XGMI         XGMI         XGMI         0            XGMI         XGMI         
+    GPU6   XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         0            XGMI         
+    GPU7   XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         XGMI         0            
+    
+    ======================================= Numa Nodes =======================================
+    GPU[0]		: (Topology) Numa Node: 0
+    GPU[0]		: (Topology) Numa Affinity: 0
+    GPU[1]		: (Topology) Numa Node: 0
+    GPU[1]		: (Topology) Numa Affinity: 0
+    GPU[2]		: (Topology) Numa Node: 0
+    GPU[2]		: (Topology) Numa Affinity: 0
+    GPU[3]		: (Topology) Numa Node: 0
+    GPU[3]		: (Topology) Numa Affinity: 0
+    GPU[4]		: (Topology) Numa Node: 1
+    GPU[4]		: (Topology) Numa Affinity: 1
+    GPU[5]		: (Topology) Numa Node: 1
+    GPU[5]		: (Topology) Numa Affinity: 1
+    GPU[6]		: (Topology) Numa Node: 1
+    GPU[6]		: (Topology) Numa Affinity: 1
+    GPU[7]		: (Topology) Numa Node: 1
+    GPU[7]		: (Topology) Numa Affinity: 1
+    ================================== End of ROCm SMI Log ===================================
+    
+    PYTORCH_TUNABLEOP_TUNING=0
+    PYTORCH_TESTING_DEVICE_ONLY_FOR=cuda
+    PYTORCH_TUNABLEOP_ENABLED=0
+    PYTORCH_TEST_WITH_ROCM=1
+    PYTORCH_ROCM_ARCH=gfx90a;gfx942
+    MAX_JOBS=32
+    LD_LIBRARY_PATH=/opt/conda/envs/py_3.9/lib/python3.9/site-packages/cv2/../../lib64:/opt/ompi/lib:/opt/rocm/lib:/usr/local/lib::/opt/rocm/lib/:/opt/conda/envs/py_3.9/lib/python3.9/site-packages/torch/lib:
+    PYTORCH_TUNABLEOP_FILENAME=/app/tuned_gemm_csv/afo_tune_device_%d_full.csv
+    VLLM_WORKER_MULTIPROC_METHOD=spawn
+    CUDA_MODULE_LOADING=LAZY
+
+</details>
+
 ### Installation/serving with AMD 8xMi300x
 ```shell
 $ sh -c 'echo 0 > /proc/sys/kernel/numa_balancing'
@@ -332,7 +486,7 @@ $ docker run -it \
    -v /mnt/nvme5n1p1/cache:/root/.cache \
    ghcr.io/embeddedllm/vllm-rocm:cb3b2b9 \
    bash
-$ VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve meta-llama/Llama-3.1-405B-FP8 --host 0.0.0.0 --port 8000 -tp 8 --max-seq-len-to-capture 16384 --served-model-name meta-llama/Llama-3.1-405B-FP8 --enable-chunked-prefill=False --num-scheduler-step 15 --max-num-seqs 1024 
+$ VLLM_RPC_TIMEOUT=30000 VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve meta-llama/Llama-3.1-405B-FP8 --host 0.0.0.0 --port 8000 -tp 8 --max-seq-len-to-capture 16384 --served-model-name meta-llama/Llama-3.1-405B-FP8 --enable-chunked-prefill=False --num-scheduler-step 15 --max-num-seqs 1024 
 ```
 
 ### Installation/serving with Nvidia 8xH100 SXM5
@@ -341,7 +495,7 @@ $ docker run --gpus all -it --rm --ipc=host -v /home/ubuntu/.cache:/root/.cache 
 $ pip install https://vllm-wheels.s3.us-west-2.amazonaws.com/nightly/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
 $ vllm serve meta-llama/Llama-3.1-405B-FP8 --tensor-parallel-size 8 --max-model-len 91680
 ```
-## Serving Benchmark Results
+## Online Serving Benchmark Results
 To execute serving benchmark, we utilized the script [benchmark_serving.py](https://github.com/vllm-project/vllm/blob/main/benchmarks/benchmark_serving.py)
 
 We conducted the benchmark across QPS 16,32 and 1000, to assess performance under different load conditions.
@@ -350,43 +504,26 @@ Below is the command to run the script in both hardware.
 ```shell
 python3 benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-FP8 --dataset-name sharegpt --dataset-path="ShareGPT_V3_unfiltered_cleaned_split.json" --request-rate=QPS
 ```
-### Key Findings ([Check Raw Data](raw_data/))
-Nvidia `8xH100 SXM5` beats `8xMi300x` in `throughput(request/s)`, `mean_ttft_ms`, `total_token_throughput` and `mean_tpot_ms` across QPS levels 16, 32 and 1000. At QPS=1000, vLLM threw [error](issues/serving-benchmark-error-qps1000.txt) and 8xMi300x dropped most of the requests.
-It completed only 17 out of 1000 requests.
-![request_throughput_vs_qps_comparison_gpus.png](images/request_throughput_vs_qps_comparison_gpus.png)
-![mean_ttft_vs_qps_comparison_gpus.png](images/mean_ttft_vs_qps_comparison_gpus.png)
-![total_token_throughput_vs_qps_comparison_gpus.png](images/total_token_throughput_vs_qps_comparison_gpus.png)
-![mean_tpot_ms_vs_qps_comparison_gpus.png](images/mean_tpot_ms_vs_qps_comparison_gpus.png)
-Note: With default vLLM config `VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve meta-llama/Llama-3.1-405B-FP8 --host 0.0.0.0 --port 8000 -tp 8 --served-model-name meta-llama/Llama-3.1-405B-FP8` all 1000 requests were handled with `3.43 request/s` throughput.
-<details>
-<summary>See test details at QPS=1000 with default config</summary>
-    
-    Traffic request rate: 1000.0
-    100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000/1000 [04:51<00:00,  3.43it/s]
-    ============ Serving Benchmark Result ============
-    Successful requests:                     1000      
-    Benchmark duration (s):                  291.60    
-    Total input tokens:                      215196    
-    Total generated tokens:                  121898    
-    Request throughput (req/s):              3.43      
-    Output token throughput (tok/s):         418.04    
-    Total Token throughput (tok/s):          1156.03   
-    ---------------Time to First Token----------------
-    Mean TTFT (ms):                          53199.74  
-    Median TTFT (ms):                        27004.71  
-    P99 TTFT (ms):                           190858.57 
-    -----Time per Output Token (excl. 1st token)------
-    Mean TPOT (ms):                          309.66    
-    Median TPOT (ms):                        326.85    
-    P99 TPOT (ms):                           473.73    
-    ---------------Inter-token Latency----------------
-    Mean ITL (ms):                           288.29    
-    Median ITL (ms):                         323.70    
-    P99 ITL (ms):                            525.53    
-    ==================================================
-</details>
+## Key Findings ([Check Raw Data](raw_data/))
 
-## Throughput-Latency Benchmark Results
+- <span style="color: #8eca9c;">H100</span> refers to 8xH100 SXM5 running meta-llama/Llama-3.1-405B-Instruct-FP8
+- <span style="color: #f4b183;">Mi300x-meta-model</span> refers to 8xMi300x running meta-llama/Llama-3.1-405B-Instruct-FP8
+- <span style="color: #9fc5e8;">Mi300x-amd-model</span> refers to 8xMi300x running amd/Llama-3.1-405B-Instruct-FP8-KV
+
+1. `H100` beats both `Mi300x-meta-model` and `Mi300x-amd-model`  in `throughput(request/s)` and `mean TPOT(ms)` across QPS levels 16, 32 and 1000.
+![request_throughput_vs_qps_comparison_gpus.png](images/request_throughput_vs_qps_comparison_gpus.png)
+![mean_tpot_ms_vs_qps_comparison_gpus.png](images/mean_tpot_ms_vs_qps_comparison_gpus.png)
+
+2. `Mi300x-amd-model` beats `H100` in `mean TTFT` at QPS level 16 and 32. However, `H100` beats
+`Mi300x-meta-model` in `mean TTFT` at QPS level 1000.`Mi300x-meta-model` performs the worst across all specified QPS levels .Also, without
+setting `VLLM_RPC_TIMEOUT=30000`, vLLM throws [error](https://github.com/dstackai/benchmarks/blob/compare_8mi300x_8h100/comparison/issues/serving-benchmark-error-qps1000.txt) at QPS level 1000 with `Mi300x`.
+![mean_ttft_vs_qps_comparison_gpus.png](images/mean_ttft_vs_qps_comparison_gpus.png)
+
+3. `Mi300x-amd-model` slightly beats `H100` in `Total Token Throughput(token/s)` at all specified QPS levels. Here too `Mi300x-meta-model` is the worst performer.
+![total_token_throughput_vs_qps_comparison_gpus.png](images/total_token_throughput_vs_qps_comparison_gpus.png)
+
+
+## Offline Throughput-Latency Benchmark Results
 To execute throughput benchmark, we utilized the script [benchmark_throughput.py](https://github.com/vllm-project/vllm/blob/main/benchmarks/benchmark_throughput.py), by varying `input_len` and `output_len` combinations
 across different batch sizes.
 
@@ -399,19 +536,35 @@ python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B
 ```shell
 python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B-FP8" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --download-dir /root/.cache --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE>
 ```
-### Key Findings
-1. When `input-len=2048` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` across batch sizes 4 to 64. At batch size
-128 and 256, `8xMI300x` beats `8xH100 SXM5`
+## Key Findings
+### When input-len=2048 and output-len=2048
+
+`Mi300x-amd-model` beats `H100` and `Mi300x-meta-model` at all specified batch sizes. After batch size 32 `Mi300x-amd-model`
+performs significantly better than `H100`. `H100` beats `Mi300x-meta-model` at batch sizes 4 to 64.
 ![tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png)
-2. When `input-len=128` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` significantly across batch sizes 4 to 128.
-![tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png)
-3. When `input-len=32784` and `output-len=2048`, `8xH100 SXM5` beats `8xMI300x` significantly at batch size 4. `8xH100 SXM5` shows minimal
-improvement in throughput as batch size increases. Upto batch size 32, `8xMI300x` shows improvement in throughput as batch size increases. 
-![tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png)
-4.To plot throughput-latency curve, we combined the Throughput(tokens/s) results from `benchmark_throughput.py` with `End-to-End latency(s)` results from `benchmark_latency.py` 
-at `input_len=2048` and `output_len=2048`. Upto ~1000 tokens/s throughput `8xH100 SXM5` provides better end to end latency for same
-throughput values. After ~1000 tokens/s throughput `8xMi300x` provides better end to end latency.
+
+Throughput-Latency curve demonstrates `Mi300x-amd-model` has significantly higher throughput capability compared to the `Mi300x-meta-model` and `H100`, even at the same latency levels.
 ![tokens_per_second_vs_end_to_end_latency_comparison_gpus.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus.png)
+
+### When input-len=128 and output-len=2048
+
+`Mi300x-amd-model` significantly outperforms `Mi300x-meta-model` at all specified batch sizes.
+`Mi300x-amd-model` is only slightly better than `H100` below batch size 64. After batch size 64, `Mi300x-amd-model` significantly outperforms `H100`.
+![tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_128_2048_comparison_gpus.png)
+
+Here too `Mi300x-amd-model` has significantly higher throughput capability compared to the `Mi300x-meta-model` and `H100`, even at the same latency levels.
+![tokens_per_second_vs_end_to_end_latency_comparison_gpus_128_2048.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_128_2048.png)
+
+### When input-len=32784 and output-len=2048
+
+`Mi300x-amd-model` significantly outperforms both `8xMI300x-meta-model` and `H100`. Upto batch size 64 `Mi300x-amd-model` exhibits proportionate
+improvements in throughput as batch size increases. Upto batch size 16 `Mi300x-meta-model` exhibits only slight improvements in throughput as batch size increases.
+`H100` shows minimal improvements in throughput as batch size increases.
+![tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png)
+![tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png)
+
+### Conclusion
+1. 
 
 ### TODOs
 1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.
