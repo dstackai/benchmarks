@@ -528,13 +528,20 @@ To execute throughput benchmark, we utilized the script [benchmark_throughput.py
 across different batch sizes.
 
 Below is the command to run the script.
-### 8xMi300x
+### 8xMi300x with meta-llama/Llama-3.1-405B-FP8
 ```shell
-python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B-FP8" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --download-dir /root/.cache --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE> --enforce-eager --num-scheduler-step 15
+python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B-FP8" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE> --enforce-eager --num-scheduler-step 15
 ```
+
+### 8xMi300x with amd/Llama-3.1-405B-Instruct-FP8-KV
+```shell
+python benchmark_throughput.py --backend vllm --model "amd/Llama-3.1-405B-Instruct-FP8-KV" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE> --enforce-eager --num-scheduler-step 1
+```
+Note: With `amd/Llama-3.1-405B-Instruct-FP8-KV` we used `--num-scheduler-step 1` based on the [script](https://github.com/ROCm/MAD/blob/76d936c2231f89e132c1a6956c0b9506ea39ab38/scripts/vllm/vllm_benchmark_report.sh#L71) from [AMD MI300X performance validation and tuning](https://rocm.docs.amd.com/en/latest/how-to/performance-validation/mi300x/vllm-benchmark.html). 
+
 ### 8xH100 SXM5
 ```shell
-python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B-FP8" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --download-dir /root/.cache --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE>
+python benchmark_throughput.py --backend vllm --model "meta-llama/Llama-3.1-405B-FP8" --input-len=<INPUT_LEN> --output-len=<OUTPUT_LEN> --tensor-parallel-size 8 --max-model-len 91680 --num-prompts=<BATCH_SIZE> --num-scheduler-step 1
 ```
 ## Key Findings
 ### When input-len=2048 and output-len=2048
@@ -563,8 +570,27 @@ improvements in throughput as batch size increases. Upto batch size 16 `Mi300x-m
 ![tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png](images/tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png)
 ![tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png)
 
+### Cost per million token
+Todo
+
 ### Conclusion
-1. 
+1. Cost Advantage: With large model like Llama 3.1-405B-Fp8, Nvidia 8xH100 SXM5 is cost-effective with shorter prompt lengths (128 to 2048) and batch sizes less than 16.
+As the prompt lengths and batch sizes increases AMD 8xMi300x has greater cost advantage over 8xH100. From Throughput-Latency curves, we can clearly see that
+throughput(token/s) for 8xH100 is limited to ~1200 tokens/s. AMD 8xMi300x can achieve upto ~3500 tokens/s whereby reducing cost per token substantially. 
+AMD's performance comes from the higher available GPU memory after loading Large models like Llama 3.1 405B and inference is more memory-bound than compute-bound. 
+2. Performance: 8xH100 SXM5 has a very competitive online serving performance. It beats 8xMi300x in throughput(request/s) and TPOT(ms) at all specified QPS levels.
+Interestingly, 8xH100 beats 8xMi300x in TTFT at QPS level 1000. 8xH100 also has very competitive Total Token Throughput at all specified QPS levels. However, on the offline
+performance side, 8xMi300x performs at next level compared to 8xH100. After ~800 tokens/s, for the same latency target, 8xMi300x provides significantly higher throughput compared to
+8xH100.Comparing 8xMi300x's offline performance with its online performance, it seems there is a lot of room for improving AMD's online serving capabilities.
+3. If we are serving `Llama 3.1-405B-Fp8` with Mi300x, we have to go with `amd/Llama-3.1-405B-Instruct-FP8-KV` and not with `meta-llama/Llama-3.1-405B-FP8`. We can clearly see that
+meta's version is not at all optimized for Mi300x.
+
+### Limitations and Constraints
+1. Comparing accelerators is challenging because we are not comparing identical hardware specifications and setups. 
+Access to the NVIDIA GB200 would have made comparison with MI300x better. To address this, we have used standardized metrics like Cost Per Million Tokens to provide a fair basis for comparison. 
+However, it's important to note that the actual cost can vary depending on factors such as the specific.
+2. 
 
 ### TODOs
 1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.
+2. Calculation of Cost/Million Token
