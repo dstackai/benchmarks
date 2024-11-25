@@ -579,7 +579,7 @@ As the prompt lengths and batch sizes increases AMD 8xMi300x has greater cost ad
 throughput(token/s) for 8xH100 is limited to ~1200 tokens/s. AMD 8xMi300x can achieve upto ~3500 tokens/s whereby reducing cost per token substantially. 
 AMD's performance comes from the higher available GPU memory after loading Large models like Llama 3.1 405B and inference is more memory-bound than compute-bound. 
 2. Performance: 8xH100 SXM5 has a very competitive online serving performance. It beats 8xMi300x in throughput(request/s) and TPOT(ms) at all specified QPS levels.
-Interestingly, 8xH100 beats 8xMi300x in TTFT at QPS level 1000. 8xH100 also has very competitive Total Token Throughput at all specified QPS levels. However, on the offline
+Interestingly, 8xH100 beats 8xMi300x in TTFT at QPS lgevel 1000. 8xH100 also has very competitive Total Token Throughput at all specified QPS levels. However, on the offline
 performance side, 8xMi300x performs at next level compared to 8xH100. After ~800 tokens/s, for the same latency target, 8xMi300x provides significantly higher throughput compared to
 8xH100.Comparing 8xMi300x's offline performance with its online performance, it seems there is a lot of room for improving AMD's online serving capabilities.
 3. If we are serving `Llama 3.1-405B-Fp8` with Mi300x, we have to go with `amd/Llama-3.1-405B-Instruct-FP8-KV` and not with `meta-llama/Llama-3.1-405B-FP8`. We can clearly see that
@@ -589,7 +589,9 @@ meta's version is not at all optimized for Mi300x.
 1. Comparing accelerators is challenging because we are not comparing identical hardware specifications and setups. 
 Access to the NVIDIA GB200 would have made comparison with MI300x better. To address this, we have used standardized metrics like Cost Per Million Tokens to provide a fair basis for comparison. 
 However, it's important to note that the actual cost can vary depending on factors such as the specific.
-2. 
+2. The performance comparison between the MI300X running `amd/Llama-3.1-405B-Instruct-FP8-KV` and the H100 SXM5 
+running` meta-llama/Llama-3.1-405B-FP8` may not be an apple-to-apple comparison due to differing quantization 
+strategies employed in each model.
 
 ### TODOs
 1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.

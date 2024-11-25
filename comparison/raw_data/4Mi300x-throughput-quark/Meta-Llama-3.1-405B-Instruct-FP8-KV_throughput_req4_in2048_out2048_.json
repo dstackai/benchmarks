@@ -1,0 +1,9 @@
+{
+    "input": 2048,
+    "ouput": 2048,
+    "elapsed_time": 97.15577102894895,
+    "num_requests": 4,
+    "total_num_tokens": 16384,
+    "requests_per_second": 0.04117099743676722,
+    "tokens_per_second": 168.63640550099853
+}
