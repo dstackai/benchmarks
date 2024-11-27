@@ -571,7 +571,6 @@ improvements in throughput as batch size increases. Upto batch size 16 `Mi300x-m
 ![tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png](images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png)
 
 ### Cost per million token
-Todo
 
 ### Conclusion
 1. Cost Advantage: With large model like Llama 3.1-405B-Fp8, Nvidia 8xH100 SXM5 is cost-effective with shorter prompt lengths (128 to 2048) and batch sizes less than 16.
@@ -592,7 +591,3 @@ However, it's important to note that the actual cost can vary depending on facto
 2. The performance comparison between the MI300X running `amd/Llama-3.1-405B-Instruct-FP8-KV` and the H100 SXM5 
 running` meta-llama/Llama-3.1-405B-FP8` may not be an apple-to-apple comparison due to differing quantization 
 strategies employed in each model.
-
-### TODOs
-1. We plan to test 2 instances of Llama3.1-405B-FP8 each on 4 GPUs.
-2. Calculation of Cost/Million Token

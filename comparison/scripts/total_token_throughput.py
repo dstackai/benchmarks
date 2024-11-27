@@ -44,7 +44,8 @@ def main(input_file, output_file):
         hue=gpu_col,
         data=filtered_df,
         dodge=True,
-        palette="Set2"
+        palette="Set2",
+        width=0.6
     )
 
     # Set title and labels

@@ -11,8 +11,8 @@ python token_vs_batch_ip128_op2048.py --input-file ../csv_data/throughput_compar
 python token_vs_batch_ip2048_op2048.py --input-file ../csv_data/throughput_comparsion.csv --output-file ../images/tokens_per_second_vs_batch_size_2048_2048_comparison_gpus.png
 python token_vs_batch_ip32784_op2048.py --input-file ../csv_data/throughput_comparsion.csv --output-file ../images/tokens_per_second_vs_batch_size_32784_2048_comparison_gpus.png
 
-python throughput_latency_curve_128_2048.py --input-file ../csv_data/throughput_latency_curve_128_2048.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_128_2048.png
-python throughput_latency_curve_2048_2048.py --input-file ../csv_data/throughput_latency_curve_2048_2048.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus.png
-python throughput_latency_curve_32784_2048.py --input-file ../csv_data/throughput_latency_curve_32784_2048.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png
+python throughput_latency_curve.py --input-len 128 --output-len 2048 --input-file ../csv_data/throughput_latency_curve.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_128_2048.png
+python throughput_latency_curve.py --input-len 2048 --output-len 2048 --input-file ../csv_data/throughput_latency_curve.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_2048_2048.png
+python throughput_latency_curve.py --input-len 32784 --output-len 2048 --input-file ../csv_data/throughput_latency_curve.csv --output-file ../images/tokens_per_second_vs_end_to_end_latency_comparison_gpus_32784_2048.png
 
 ``` 

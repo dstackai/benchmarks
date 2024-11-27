@@ -46,7 +46,7 @@ def main(input_file, output_file):
         data=filtered_df,
         dodge=True,
         palette="Set2",
-        width=0.4
+        width=0.6
     )
 
     # Set title and labels
