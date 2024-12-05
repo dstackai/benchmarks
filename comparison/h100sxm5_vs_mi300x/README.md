@@ -504,7 +504,7 @@ Below is the command to run the script in both hardware.
 ```shell
 python3 benchmark_serving.py --backend vllm --model meta-llama/Llama-3.1-405B-FP8 --dataset-name sharegpt --dataset-path="ShareGPT_V3_unfiltered_cleaned_split.json" --request-rate=QPS
 ```
-## Key Findings ([Check Raw Data](raw_data/))
+## Key Findings ([Check Raw Data](h100sxm5_vs_mi300x/raw_data/))
 
 - <span style="color: #8eca9c;">H100</span> refers to 8xH100 SXM5 running meta-llama/Llama-3.1-405B-Instruct-FP8
 - <span style="color: #f4b183;">Mi300x-meta-model</span> refers to 8xMi300x running meta-llama/Llama-3.1-405B-Instruct-FP8
