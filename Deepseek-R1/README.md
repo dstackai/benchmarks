@@ -264,24 +264,60 @@ resources:
 
 ## Key Findings
 ### Throughput Vs Latency
-#### Online
+#### Online Throughput
+Mi300 achieves the highest throughput, while H200 performs better at lower concurrency levels. vLLM outperforms SgLang across a wider range of concurrency levels on both Mi300 and H200, while also achieving the highest throughput.
+As shown in the online throughput charts except Mi300-vLLM other configurations begin to plateau once concurrency reaches 64.
+
+Mi300-vLLM delivers best throughput at higher concurrency levels, particularly at 128. 
+
+H200-vLLM delivers best throughput performance at lower concurrency levels, especially below 64.
+
+Mi300-SgLang outperforms both H200-SgLang and Mi300-vLLM at concurrency levels below 32 but remains behind H200-vLLM.
+
+H200-SgLang surpasses both H200-vLLM and Mi300-SgLang at higher concurrency levels, particularly at 128, but still falls short of Mi300-vLLM.
+
 ![Online Throughput Vs Latency](images/online_throughput_vs_latency.png)
 ![Online Throughput Vs Concurrency](images/online-throughput-vs-concurrency.png)
 
-#### Offline
+#### Offline Throughput
+Unlike online throughput results, H200 achieves the highest overall throughput, while Mi300 performs better at smaller batch sizes. 
+vLLM clearly outperforms SgLang on Mi300, whereas SgLang surpasses vLLM on H200 at medium and larger batch sizes.
+
+H200-SgLang achieves the highest throughput at larger batch sizes, particularly above 512.
+
+Mi300-vLLM delivers the best throughput at medium batch sizes, especially between 128 and 256.
+
+H200-vLLM performs best at smaller batch sizes, particularly below 64.
+
+Mi300-SgLang lags behind all other configurations except H200-TensorRT-LLM.
+
+H200-TensorRT-LLM significantly lags behind all other configurations.
+
 ![Offline Throughput Vs Latency](images/offline_throughput_vs_latency.png)
-
+Note: H200-Trt-LLM has been removed from the above Offline Throughput-Latency chart to avoid scale distortion, 
+which would compress other configurations and make comparisons difficult.
+![Offline Throughput Vs Batch Size](images/offline-throughput-vs-batch-size.png)
 ### Throughput/Latency Vs Output Length
+ 
 #### Online
-![Online Throughput Vs Output Length](images/online-throughput-vs-output.png)
+To analyze throughput and latency performance across increasing output token lengths, request concurrency is fixed at 128.
 
+SgLang on both Mi300 and H200 remains relatively stable as output token length increases, whereas vLLM implementations experience more variation. Notably, H200-vLLM shows a sharp latency spike at 6400 tokens.
+
+SgLang-H200 delivers best performance with larger output token length, especially after 3200.
+![Online Throughput Vs Output Length](images/online-throughput-vs-output.png)
 ![Online Latency Vs Output Length](images/online-latency-vs-output.png)
 
 ### Offline
-![Offline Throughput Vs Output Length](images/offline-throughput-vs-output.png)
+To analyze throughput and latency performance across increasing output token lengths, batch size is fixed at 256.
 
-![Offline Latency Vs Output Length](images/offline-latency-vs-output-length.png)
+Like Online throughput results, SgLang on both Mi300 and H200 remains relatively stable as output token length increases.
 
+SgLang-H200 delivers best performance with larger output token lengths, especially after 1600.
+
+![Offline Throughput Vs Output Length 256](images/offline-throughput-vs-output-256.png)
+
+![Offline Latency Vs Output Length 256](images/offline-latency-vs-output-length-256.png)
 
 ### TTFT & TPOT
 ![TTFT Vs Concurrency](images/ttft-vs-concurrency.png)
