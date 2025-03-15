@@ -277,7 +277,7 @@ Mi300 achieves the highest throughput, while H200 performs better at lower concu
 - H200-Tensorrt-LLM lags behind other configurations at concurrency levels below 16, but starts to outperform both Mi300-Sglang and H200-Sglang at concurrency level above 64. 
 
 ![Online Throughput Vs Latency](images/online_throughput_vs_latency.png)
-![Online Throughput Vs Concurrency](images/online-throughput-vs-concurrency.png)
+<!-- ![Online Throughput Vs Concurrency](images/online-throughput-vs-concurrency.png) -->
 
 #### Offline Throughput
 Unlike online throughput results, H200 achieves the highest overall throughput, while Mi300 performs better at smaller batch sizes. vLLM clearly outperforms SgLang on Mi300, whereas SgLang surpasses vLLM on H200 at medium and larger batch sizes.
@@ -297,7 +297,7 @@ Unlike online throughput results, H200 achieves the highest overall throughput, 
 *Note: H200-Trt-LLM has been removed from the above Offline Throughput-Latency chart to avoid scale distortion, 
 which would compress other configurations and make comparisons difficult.*
 
-![Offline Throughput Vs Batch Size](images/offline-throughput-vs-batch-size.png)
+<!-- ![Offline Throughput Vs Batch Size](images/offline-throughput-vs-batch-size.png) -->
 ### Throughput/Latency Vs Output Length
  
 #### Online Throughput/Latency Vs Output Length
