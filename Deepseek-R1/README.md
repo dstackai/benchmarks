@@ -151,6 +151,7 @@ In this study, we aim to assess how inference backends—SgLang, vLLM, and Tenso
 ## dstack Task
 ### SgLang-H200
 ```yaml
+# Below task is to run Sglang inference backend with openai compatible endpoint for online benchmark. 
 type: task
 name: sg-h200
 image: lmsysorg/sglang:latest
@@ -164,6 +165,7 @@ resources:
 ```
 ### SgLang-Mi300x
 ```yaml
+# Below task is to run Sglang inference backend with openai compatible endpoint for online benchmark. 
 type: task
 name: mi300-sglang
 image: rocm/sglang-staging:20250212
@@ -181,9 +183,35 @@ resources:
 
 ### Tensorrt-LLM-H200
 ```yaml
+# Below task is to run TensorRT-LLM inference backend with openai compatible endpoint for online benchmark. 
 type: task
-name: vllm-h200
-image: sjbbihan/tensorrt_llm:devel # Docker image using https://github.com/NVIDIA/TensorRT-LLM/tree/deepseek
+name: trt-h200
+image: # Use Docker image built using https://github.com/NVIDIA/TensorRT-LLM.git with commit 9b931c0f6305aefa3660e6fb84a76a42c0eef167
+
+env:
+  - MAX_BATCH_SIZE=512
+  - MAX_NUM_TOKENS=16384
+  - MAX_SEQ_LENGTH=16384
+  
+commands:
+  - git lfs install # Required to pull large repos
+  - git clone https://huggingface.co/deepseek-ai/DeepSeek-R1 deepseek
+  - trtllm-serve
+          --backend pytorch
+          --max_batch_size $MAX_BATCH_SIZE
+          --max_num_tokens $MAX_NUM_TOKENS
+          --max_seq_len $MAX_SEQ_LENGTH
+          --tp_size $DSTACK_GPUS_NUM
+          --ep_size 4
+          --pp_size 1
+          deepseek
+```
+```yaml
+# Below task is used to build Deepseek-R1 model engine with TensorRT-LLM deepseek branch. 
+# The model engine is used to run TensorRT-LLM offline benchmark.
+type: task
+name: build-deepseek-r1-engine
+image: # Use Docker image built using https://github.com/NVIDIA/TensorRT-LLM.git deepseek branch.
 
 env:
   - MODEL_REPO=https://huggingface.co/deepseek-ai/DeepSeek-R1
@@ -229,6 +257,7 @@ resources:
 
 ### vLLM-H200
 ```yaml
+# Below task is to run vLLM inference backend with openai compatible endpoint for online benchmark. 
 type: task
 name: vllm-h200
 image: vllm/vllm-openai:v0.7.3
@@ -249,6 +278,7 @@ resources:
 ```
 ### vLLM-Mi300
 ```yaml
+# Below task is to run vLLM inference backend with openai compatible endpoint for online benchmark. 
 type: task
 name: vllm-mi300
 image: rocm/vllm-dev:vllm-ds3-staging-0217
@@ -262,6 +292,100 @@ commands:
 
 resources:
   gpu: 8:MI300X
+```
+
+## Online Benchmarking Commands
+For Online Benchmarking we have used Sglang's bench_serving.py script with slight modification to include TensorRT-LLM. The script can be found in [Deepseek-R1/bench_serving.py](https://github.com/dstackai/benchmarks/tree/main/Deepseek-R1/bench_serving.py).
+### SgLang
+```shell
+# No Cache
+python3 bench_serving.py --backend sglang \
+      --dataset-name random \
+      --num-prompts 500 \
+      --random-input 3200 \ 
+      --random-output 800 \
+      --random-range-ratio 1 \
+      --max-concurrency 128 # @ Concurrencies 4,8,16,...,128 and @ --random-output 800,1600,3200
+
+# Prefix Cached
+python3 bench_serving.py --backend sglang \
+    --dataset-name generated-shared-prefix \
+    --gsp-num-groups 10 \
+    --gsp-prompts-per-group 50 \
+    --gsp-system-prompt-len 2000 \
+    --gsp-question-len 1200 \
+    --gsp-output-len 800 \
+    --num-prompts 500 \
+    --max-concurrency 128
+```
+### vLLM
+```shell
+# No Cache
+python3 bench_serving.py --backend vllm \ 
+      --dataset-name random \
+      --num-prompts 500 \
+      --random-input 3200 \ 
+      --random-output 800 \
+      --random-range-ratio 1 \ 
+      --max-concurrency 128 # @ Concurrencies 4,8,16,...,128 and @ --random-output 800,1600,3200
+
+# Prefix Cached
+python3 bench_serving.py --backend vllm \
+    --dataset-name generated-shared-prefix \
+    --gsp-num-groups 10 \
+    --gsp-prompts-per-group 50 \
+    --gsp-system-prompt-len 2000 \
+    --gsp-question-len 1200 \
+    --gsp-output-len 800 \
+    --num-prompts 500 \
+    --max-concurrency 128
+```
+### TensorRT-LLM
+```shell
+python3 bench_serving.py --backend trt-torch-flow \
+    --dataset-name random \
+    --num-prompts 500 \
+    --random-input 3200 \ 
+    --random-output 800 \
+    --random-range-ratio 1 \ 
+    --max-concurrency 128 # @ Concurrencies 4,8,16,...,128 and @ --random-output 800,1600,3200
+```
+
+## Offline Benchmarking Commands
+For vLLM and Sglang Offline Benchmarking, we have used vLLM's benchmark_throughput.py with modifications to include SgLang. For Tensorrt-LLM we have built a custom benchmark_throughput_trt.py based on vLLM's benchmark_throughput.py. The scripts can be found in [Deepseek-R1](https://github.com/dstackai/benchmarks/tree/main/Deepseek-R1).
+
+### Sglang
+```shell
+python benchmark_throughput.py \
+    --backend sglang \
+    --model deepseek-ai/DeepSeek-R1 \
+    --input-len=3200 \
+    --output-len=800 \
+    --tensor-parallel-size=8 \
+    --max-model-len=32768 \
+    --num-prompts=1024 # @ --num-prompts 32,64,128,...,1024 and @ --random-output 800,1600,3200,6400
+```
+### vLLM
+```shell
+python benchmark_throughput.py \
+    --backend vllm \
+    --model deepseek-ai/DeepSeek-R1 \
+    --input-len=3200 \
+    --output-len=800 \
+    --tensor-parallel-size=8 \
+    --max-model-len=32768 \
+    --num-prompts=1024 # @ --num-prompts 32,64,128,...,1024 and @ --random-output 800,1600,3200,6400
+```
+### TensorRT-LLM
+```shell
+python benchmark_throughput_trt.py \
+  --model "/path/to/deepseek-engine" \ # Build deepseek-engine using dstack task build-deepseek-r1-engine
+  --tokenizer "/root/.cache/DeepSeek-R1" \
+  --input-len=3200 \
+  --output-len=800 \
+  --tensor-parallel-size=8 \
+  --max-model-len=32768 \
+  --num-prompts=1024 # @ --num-prompts 32,64,128,...,1024 and @ --random-output 800,1600,3200,6400
 ```
 
 # Key Findings
@@ -375,6 +499,8 @@ Time to First Token (TTFT) and Time per Output Token (TPOT) should not vary acro
  *Note: To analyze throughput and latency performance across increasing output token lengths, request concurrency is fixed at 128.*
 
 ### Prefix Caching
+To test prefix caching ability, about 62.5% of each ~3200-token prompt (i.e., 2000 out of 3200 tokens) is a repeated prefix across multiple requests. 
+
 - H200-vLLM outperforms all other configurations in online throughput, TTFT and End to End Latency with Prefix Cached. 
 
 - H200-vLLM's performs TPOT degrades when Prefix Cached, while Sglang performs better in TPOT with both Mi300 and H200 when Prefix Cached.
@@ -437,10 +563,11 @@ Time to First Token (TTFT) and Time per Output Token (TPOT) should not vary acro
 
 - With Mi300, vLLM does not support prefix caching yet.
 
-### Limitation
+### Limitations
 1. This benchmark does not evaluate the accuracy of model outputs across different inference backends and GPUs. Including accuracy metrics would help determine if performance improvements come at the cost of model accuracy.
 2. The offline benchmark results for TensorRT-LLM were obtained using the DeepSeek-R1 model engine built from the deepseek branch ([link](https://github.com/NVIDIA/TensorRT-LLM/tree/deepseek)). However, the TensorRT-LLM team recommends using the TorchFlow-based approach as outlined [here](https://github.com/NVIDIA/TensorRT-LLM/tree/main/examples/deepseek_v3) instead of deploying model engines directly.As a result, the offline performance of TensorRT-LLM in this benchmark may not reflect its optimal efficiency, since the recommended inference pipeline was not used. 
 3. The inference backends evaluated in this benchmark are undergoing continuous optimization, particularly for the DeepSeek-R1 model. Additionally, DeepSeek AI itself is actively releasing performance and efficiency improvements for its models. Due to these ongoing optimizations, the current benchmark results may not accurately represent the long-term performance of these inference setups.
-4. The impact of dynamic batching on inference efficiency is not explicitly tested. The inference backends adjust batch sizes dynamically based on workload patterns, which can significantly affect real-world performance.
+4. The impact of dynamic batching on inference efficiency is not tested. The inference backends adjust batch sizes dynamically based on workload patterns, which can significantly affect real-world performance.
 
-### Reference
+### References
+Todo
