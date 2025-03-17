@@ -570,4 +570,7 @@ To test prefix caching ability, about 62.5% of each ~3200-token prompt (i.e., 20
 4. The impact of dynamic batching on inference efficiency is not tested. The inference backends adjust batch sizes dynamically based on workload patterns, which can significantly affect real-world performance.
 
 ### References
-Todo
+1. [Unlock DeepSeek-R1 Inference Performance on AMD Instinct™ MI300X GPU](https://rocm.blogs.amd.com/artificial-intelligence/DeepSeekR1_Perf/README.html)
+2. [Deploy DeepSeek-R1 671B on 8x NVIDIA H200 with SGLang](https://datacrunch.io/blog/deploy-deepseek-r1-on-8x-nvidia-h200)
+3. [vLLM Prefix Caching](https://docs.vllm.ai/en/latest/design/automatic_prefix_caching.html#design-automatic-prefix-caching)
+4. [SgLang Prefix Caching](https://lmsys.org/blog/2024-01-17-sglang/)
