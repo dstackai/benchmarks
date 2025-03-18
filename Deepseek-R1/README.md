@@ -388,9 +388,31 @@ python benchmark_throughput_trt.py \
   --num-prompts=1024 # @ --num-prompts 32,64,128,...,1024 and @ --random-output 800,1600,3200,6400
 ```
 
+## Benchmark Modes
+### Online Inference
+For online inference we have used SGLang's [Deepseek-R1/bench_serving.py](https://github.com/dstackai/benchmarks/tree/main/Deepseek-R1/bench_serving.py) script with slight modification to include TensorRT-LLM. We have benchmarked with varying request concurrencies and output token lengths with input token length constant at 3200 as listed in below table.
+
+| Request Concurrencies | Output Token Lengths | Prefix-Cached |
+|-----------------------|----------------------|---------------|
+| 4,8,16,...,128        | 800                  |No             |
+| 128                   | 1600, 3200, 6400     |No             |
+| 128                   | 800                  |Yes            |
+
+### Offline Inference
+For vLLM and SGLang, we have used vLLM's [Deepseek-R1/benchmark_throughput.py](https://github.com/dstackai/benchmarks/tree/main/Deepseek-R1/benchmark_throughput.py) with modifications to include SGLang. For TensorRT-LLM we have built a custom [Deepseek-R1/benchmark_throughput_trt.py](https://github.com/dstackai/benchmarks/tree/main/Deepseek-R1/benchmark_throughput_trt.py). We have benchmarked with varying batch size and output token lengths with input token length constant at 3200 as listed in below table.
+
+| Batch Sizes           | Output Token Lengths |
+|-----------------------|----------------------|
+| 32,64,128,...,1024    | 800                  |
+| 256,512,1024          | 1600                 |
+| 256,512,1024          | 3200                 |
+
 # Key Findings
 ## Throughput Vs Latency
 #### Online Throughput
+
+![Online Throughput Vs Latency](images/online_throughput_vs_latency.png)
+
 Mi300 achieves the highest total throughput (input+output), while H200 performs better at lower concurrency levels. vLLM outperforms SgLang and Tensorrt-LLM across a wider range of concurrency levels on both Mi300 and H200, while also achieving the highest throughput.As shown in the online throughput charts, except Mi300-vLLM other configurations begin to plateau once concurrency reaches 64.
 
 - Mi300-vLLM delivers best throughput at higher concurrency levels, particularly at 128. 
@@ -402,10 +424,13 @@ Mi300 achieves the highest total throughput (input+output), while H200 performs 
 - H200-SgLang surpasses both H200-vLLM and Mi300-SgLang at higher concurrency levels, particularly at 128, but still falls short of Mi300-vLLM.
 - H200-Tensorrt-LLM lags behind other configurations at concurrency levels below 16, but starts to outperform both Mi300-Sglang and H200-Sglang at concurrency level above 64. 
 
-![Online Throughput Vs Latency](images/online_throughput_vs_latency.png)
+
 <!-- ![Online Throughput Vs Concurrency](images/online-throughput-vs-concurrency.png) -->
 
 #### Offline Throughput
+
+![Offline Throughput Vs Latency](images/offline_throughput_vs_latency.png)
+
 Unlike online throughput results, H200 achieves the highest overall throughput, while Mi300 performs better at smaller batch sizes. vLLM clearly outperforms SgLang on Mi300, whereas SgLang surpasses vLLM on H200 at medium and larger batch sizes.
 
 - H200-SgLang achieves the highest throughput at larger batch sizes, particularly above 512.
@@ -418,7 +443,7 @@ Unlike online throughput results, H200 achieves the highest overall throughput, 
 
 - H200-TensorRT-LLM significantly lags behind all other configurations.
 
-![Offline Throughput Vs Latency](images/offline_throughput_vs_latency.png)
+
 
 *Note: H200-Trt-LLM has been removed from the above Offline Throughput-Latency chart to avoid scale distortion, 
 which would compress other configurations and make comparisons difficult.*
@@ -427,7 +452,7 @@ which would compress other configurations and make comparisons difficult.*
 
 ## TTFT & TPOT
 
-#### TTFT
+#### TTFT Vs Concurrency
 H200 achieves the best TTFT at concurrency levels below 64, while Mi300 outperforms once concurrency exceeds 64. vLLM consistently delivers better TTFT than SgLang on both H200 and Mi300, except at concurrency 128. Tensort-LLM beats vLLM and SgLang at concurrency levels below 64.
 
 - H200-Tensorrt-LLM delivers best and consistent TTFT at concurrency levels below 64. Its TTFT degrades significantly at concurrency 128. 
@@ -440,7 +465,7 @@ H200 achieves the best TTFT at concurrency levels below 64, while Mi300 outperfo
 
 ![TTFT Vs Concurrency](images/ttft-vs-concurrency.png)
 
-#### TPOT
+#### TPOT Vs Concurrency
 H200-vLLM provides best TPOT performance across all concurrency levels, with a slight exception at concurrency level 16, where Mi300-Sglang provides slightly better performance.
 
 Mi300-SgLang provides second best performance upto concurrency level 32, but performs worst among the configurations beyond this level. 
@@ -518,48 +543,50 @@ To test prefix caching ability, about 62.5% of each ~3200-token prompt (i.e., 20
 
 ## Conclusion
 ### Throughput/End-to-End Latency
-- With Mi300x, vLLM outperforms SgLang on online as well as offline throughput and End-to-End Latency. Mi300 with vLLM achieves the overall highest throughput (input + output) of 4574 tokens/s in the online throughput scenario. Only at request concurrencies below 32, SgLang outperforms vLLM in online throughput and End-to-End Latency.
-
-- With H200, Tensorrt-LLM outperforms both vLLM and SgLang with highest H200 online throughput of 4176 tokens/s. At concurrencies below 128, vLLM outperforms Sglang and Tensorrt-LLM in online throughput and End-to-End Latency.In the offline throughput scenario, H200 achieves the highest overall throughput of 6311 tokens/s with SgLang. 
+- With Mi300x, as seen in [Online Throughput Vs Latency Chart](#online-throughput)  and [Offline Throughput Vs Latency chart](#offline-throughput), vLLM outperforms SgLang on online as well as offline throughput and End-to-End Latency. 
+Mi300 with vLLM achieves the overall highest throughput (input + output) of 4574 tokens/s in the online throughput scenario 
+. Only at request concurrencies below 32, SgLang outperforms vLLM in online throughput and End-to-End Latency.
+  
+- With H200, as seen in [Online Throughput Vs Latency Chart](#online-throughput), Tensorrt-LLM outperforms both vLLM and SgLang with highest H200 online throughput of 4176 tokens/s. At concurrencies below 128, vLLM outperforms Sglang and Tensorrt-LLM in online throughput and End-to-End Latency.In the offline throughput scenario, H200 achieves the highest overall throughput of 6311 tokens/s with SgLang, as seen in [Offline Throughput Vs Latency Charts](#offline-throughput)
 
 - With H200, Sglang has potential for optimizating online batch processing to match the efficiency of offline batch processing, whereby delivering highest overall throughput.
 
 - While Mi300x's larger memory capacity and higher bandwidth should enable higher throughput at larger batch sizes in offline inference, given the memory-bound nature of such workloads, the benchmark results show a mixed picture. While online throughput performance aligns with this expectation, the offline results suggest that inference backends for Mi300x may still require further optimization to fully leverage its architectural advantages.
 
 ### Throughput/End-to-End Latency Vs Output Token Length
-- With H200, Sglang delivers slightly higher throughput and better latency in online scenario as output token length increases. In Offline scenario with H200, Sglang delivers distinctly higher thoughput and better latency as output token length increases. Sglang with H200 beats Mi300x with both the setups when output token length increases. 
+- With H200, as seen in [Online Throughput/Latency Vs Output Length Chart](#online-throughputlatency-vs-output-length) Sglang delivers slightly higher throughput and better latency in online scenario as output token length increases. In Offline scenario with H200, as seen in [Offline Throughput/Latency Vs Output Length Chart](#offline-throughputlatency-vs-output-length) Sglang delivers distinctly higher thoughput and better latency as output token length increases. Sglang with H200 beats Mi300x with both the setups when output token length increases. 
 
-- With Mi300x, vLLM maintains the lead against SgLang in both online as well as offline scenarios as output token length increases.
+- With Mi300x, as seen in [Online Throughput/Latency Vs Output Length Chart](#online-throughputlatency-vs-output-length) and [Offline Throughput/Latency Vs Output Length Chart](#offline-throughputlatency-vs-output-length) vLLM maintains the lead against SgLang in both online as well as offline scenarios as output token length increases.
 
 
 ### TTFT
-- With Mi300x, vLLM achieves the overall lowest TTFT at concurrency level 128. Below concurrency level 128, vLLM and Sglang have similar TTFT with Mi300x.
+- With Mi300x, as seen in [TTFT Vs Concurrency Chart](#ttft-vs-concurrency), vLLM achieves the overall lowest TTFT at concurrency level 128. Below concurrency level 128, vLLM and Sglang have similar TTFT with Mi300x.
 
-- With H200, TensorRT-LLM maintains the overall lowest and most consistent TTFT up to concurrency 64. 
+- With H200, as seen in [TTFT Vs Concurrency Chart](#ttft-vs-concurrency), TensorRT-LLM maintains the overall lowest and most consistent TTFT up to concurrency 64. 
 
 - TTFT being more compute-intensive, H200’s advantage is evident, aligning with SemiAnalysis’s Mi300x vs. H200 TFLOPS benchmark ([link](https://semianalysis.com/2024/12/22/mi300x-vs-h100-vs-h200-benchmark-part-1-training/)), which shows that despite Mi300x’s higher theoretical TFLOPS, H200 achieves higher TFLOPS in reality. However at 128 concurrent requests, the load shifts to memory capacity and bandwidth, where Mi300x has advantage.
 
 ### TPOT
-- With H200, vLLM maintains the overall lowest TPOT at all request concurrencies.
+- With H200, as seen in [TPOT Vs Concurrency Chart](#tpot-vs-concurrency), vLLM maintains the overall lowest TPOT at all request concurrencies.
 
-- With Mi300x, SgLang delivers lowest TPOT upto request concurrency 32. After concurrency 32, vLLM delivers lowest TPOT with Mi300x.
+- With Mi300x, as seen in [TPOT Vs Concurrency Chart](#tpot-vs-concurrency), SgLang delivers lowest TPOT upto request concurrency 32. After concurrency 32, vLLM delivers lowest TPOT with Mi300x.
 
 - Given that TPOT is memory-bound, Mi300x should have stronger TPOT advantage with further optimizations.
 
 ### TTFT Vs Output Token Length
-- With H200, Sglang demonstrates stable TTFT across increasing Output Token Length. vLLM and Tensorrt-LLM exhibit a significant increase in Time To First Token (TTFT) as Output Token Length increases. This behavior is likely caused by increasing memory pressure from KV Cache growth as more tokens are generated. Efficient memory management is crucial to maintaining consistent TTFT across different output lengths for H200, as demonstrated by H200 with SgLang.
+- With H200, as seen is [TTFT Vs Output Length Chart](#ttft-vs-output-length), Sglang demonstrates stable TTFT across increasing Output Token Length. vLLM and Tensorrt-LLM exhibit a significant increase in Time To First Token (TTFT) as Output Token Length increases. This behavior is likely caused by increasing memory pressure from KV Cache growth as more tokens are generated. Efficient memory management is crucial to maintaining consistent TTFT across different output lengths for H200, as demonstrated by H200 with SgLang.
 
-- With Mi300x, vLLM and Sglang both demostrate stable TTFT across increasing Output Token Length. vLLM exhibits lower TTFT compared to Sglang accross all Output Token Lengths.
+- With Mi300x, as seen in [TTFT Vs Output Length Chart](#ttft-vs-output-length), vLLM and Sglang both demostrate stable TTFT across increasing Output Token Length. vLLM exhibits lower TTFT compared to Sglang accross all Output Token Lengths.
 
 ### TPOT Vs Output Token Length
-- With H200, Sglang and Tensorrt-LLM demonstrates stable TPOT across increasing Output Token Length. vLLM maintains overall lowest TPOT upto Output Token Length 3200, but suddenly TPOT increases at Token Length 6400. vLLM's abrupt increase is likely caused by increasing memory pressure from KV Cache growth. This requires efficient memory management at higher Output Token Length. 
+- With H200, as seen in [TPOT Vs Output Length Chart](#tpot-vs-output-length), Sglang and Tensorrt-LLM demonstrates stable TPOT across increasing Output Token Length. vLLM maintains overall lowest TPOT upto Output Token Length 3200, but suddenly TPOT increases at Token Length 6400. vLLM's abrupt increase is likely caused by increasing memory pressure from KV Cache growth. This requires efficient memory management at higher Output Token Length. 
 
-- With Mi300x, both Sglang and vLLM demonstrates stable TPOT across increasing Output Token Length. vLLM maintains lowest TPOT across all Output Token Lengths.
+- With Mi300x, as seen in [TPOT Vs Output Length Chart](#tpot-vs-output-length), both Sglang and vLLM demonstrates stable TPOT across increasing Output Token Length. vLLM maintains lowest TPOT across all Output Token Lengths.
 
 - Given that both TPOT and increasing Output Token Lenghts are memory-bound, Mi300x should have stronger TPOT advantage with further optimizations.
 
 ### Prefix Caching
-- With H200, vLLM prefix caching mechanism outperforms SgLang in online throughput, TTFT and End-to-End latency. However vLLM's TPOT increases after prefix is cached. This behavior needs further investigation.
+- With H200, as seen in [No Cache Vs Prefix Cached Chart](#prefix-caching) vLLM prefix caching mechanism outperforms SgLang in online throughput, TTFT and End-to-End latency. However vLLM's TPOT increases after prefix is cached. This behavior needs further investigation.
 
 - With Mi300, vLLM does not support prefix caching yet.
 
