@@ -1,0 +1,34 @@
+type: task
+name: perf-tests
+
+nodes: 2
+startup_order: master-first
+stop_criteria: all-done
+
+
+# Mount the system libraries folder from the host
+volumes:
+  - /usr/local/lib:/mnt/lib
+
+image: rocm/dev-ubuntu-22.04:6.4-complete
+
+commands:
+  # Build perf tests
+  - git clone https://github.com/linux-rdma/perftest
+  - cd perftest
+  - ./autogen.sh
+  - ./configure
+  - make & make install
+  # Preload the RoCE driver library from the host (for Broadcom driver     compatibility) 
+  - export LD_PRELOAD=/mnt/lib/libbnxt_re-rdmav34.so
+  - |
+    # Run server in master node
+    if [ $DSTACK_NODE_RANK -eq 0 ]; then
+      taskset -c 0-31 ./ib_write_bw -d rocep28s0 -F -a --report_gbits -q 2
+    else
+      # Run client in worker node
+      taskset -c 0-31 ./ib_write_bw -d rocep28s0 -F -a --report_gbits -q 2 $DSTACK_MASTER_NODE_IP
+    fi
+
+resources:
+  gpu: MI300X:8

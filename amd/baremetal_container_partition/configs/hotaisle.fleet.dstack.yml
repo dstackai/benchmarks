@@ -1,0 +1,14 @@
+type: fleet
+name: hotaisle-fleet
+
+placement: any
+
+ssh_config:
+  user: hotaisle
+  identity_file: ~/.ssh/id_rsa
+
+  hosts:
+    - hostname: ssh.hotaisle.cloud
+      port: 22007
+    - hostname: ssh.hotaisle.cloud
+      port: 22015
