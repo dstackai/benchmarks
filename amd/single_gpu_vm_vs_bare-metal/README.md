@@ -28,12 +28,10 @@ vllm serve meta-llama/Llama-3.3-70B-Instruct --max-model-len 100000
 
 ### 2. Training
 
-Using the `rocm/dev-ubuntu-22.04:6.4-complete` image.
-
 **Run VM Benchmark:**
 
 ```bash
-cd inference
+cd training
 ./run_vm_container.sh
 # Inside container:
 ./run_benchmark.sh
@@ -42,7 +40,7 @@ cd inference
 **Run VM Benchmark:**
 
 ```bash
-cd inference
+cd training
 ./run_baremetal_container.sh
 # Inside container:
 ./run_benchmark.sh
